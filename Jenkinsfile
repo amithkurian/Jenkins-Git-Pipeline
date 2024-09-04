@@ -28,7 +28,8 @@ pipeline {
 
                         mail to: "${env.EMAIL_RECIPIENT}",
                              subject: "Unit & Integration Tests: ${currentBuild.currentResult}",
-                             body: """The Unit and Integration Tests stage has finished with status: ${currentBuild.currentResult}.
+                             body: """
+The Unit and Integration Tests stage has finished with status: ${currentBuild.currentResult}.
 
 You can download the log file from the following link:
 
@@ -58,7 +59,8 @@ ${env.BUILD_URL}artifact/unit-integration-tests-log.txt
 
                         mail to: "${env.EMAIL_RECIPIENT}",
                              subject: "Security Scan: ${currentBuild.currentResult}",
-                             body: """The Security Scan stage has finished with status: ${currentBuild.currentResult}.
+                             body: """
+The Security Scan stage has finished with status: ${currentBuild.currentResult}.
 
 You can download the log file from the following link:
 
@@ -91,16 +93,16 @@ ${env.BUILD_URL}artifact/security-scan-log.txt
     post {
         always {
             script {
-                // Save the full log file to the workspace
                 def logFile = "${env.WORKSPACE}/build-log.txt"
                 writeFile file: logFile, text: currentBuild.rawBuild.getLogFile().text
                 
                 // Archive the log file
                 archiveArtifacts artifacts: 'build-log.txt'
-                
+
                 mail to: "${env.EMAIL_RECIPIENT}",
                      subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
-                     body: """The pipeline has finished.
+                     body: """
+The pipeline has finished.
 
 You can download the full build log from the following link:
 
