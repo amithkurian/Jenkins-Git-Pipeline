@@ -61,7 +61,7 @@ pipeline {
                 // Archive the log file
                 archiveArtifacts artifacts: 'build-log.txt'
                 
-                def buildLogSnippet = currentBuild.rawBuild.getLog().join("\n")
+                def buildLogSnippet = currentBuild.rawBuild.getLog(2000).join("\n")
                 
                 mail to: 'amithkurian16@gmail.com',
                      subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
