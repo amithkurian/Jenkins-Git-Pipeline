@@ -5,6 +5,7 @@ pipeline {
         DIRECTORY_PATH = 'C:\\Users\\amith\\OneDrive\\Desktop\\2024\\t2\\223\\Jenkins\\Git'
         TESTING_ENVIRONMENT = 'TestEnv'
         PRODUCTION_ENVIRONMENT = 'AmithProd'
+        EMAIL_RECIPIENT = 'amithkurian16@gmail.com'
     }
 
     stages {
@@ -18,6 +19,28 @@ pipeline {
             steps {
                 echo 'Running unit tests using JUnit and integration tests using TestNG'
             }
+            post {
+                always {
+                    script {
+                        def logSnippet = currentBuild.rawBuild.getLog(1000).join("\n")
+                        def logFile = "${env.WORKSPACE}/unit-integration-tests-log.txt"
+                        writeFile file: logFile, text: currentBuild.rawBuild.getLogFile().text
+                        archiveArtifacts artifacts: 'unit-integration-tests-log.txt'
+
+                        mail to: "${env.EMAIL_RECIPIENT}",
+                             subject: "Unit & Integration Tests: ${currentBuild.currentResult}",
+                             body: """The Unit and Integration Tests stage has finished with status: ${currentBuild.currentResult}.
+
+Here are the last 1000 lines of the log:
+
+${logSnippet}
+
+For the full log, please visit: ${env.BUILD_URL}artifact/unit-integration-tests-log.txt
+""",
+                             attachmentsPattern: 'unit-integration-tests-log.txt'
+                    }
+                }
+            }
         }
 
         stage('Code Analysis') {
@@ -29,6 +52,28 @@ pipeline {
         stage('Security Scan') {
             steps {
                 echo 'Performing security scan using OWASP Dependency-Check'
+            }
+            post {
+                always {
+                    script {
+                        def logSnippet = currentBuild.rawBuild.getLog(1000).join("\n")
+                        def logFile = "${env.WORKSPACE}/security-scan-log.txt"
+                        writeFile file: logFile, text: currentBuild.rawBuild.getLogFile().text
+                        archiveArtifacts artifacts: 'security-scan-log.txt'
+
+                        mail to: "${env.EMAIL_RECIPIENT}",
+                             subject: "Security Scan: ${currentBuild.currentResult}",
+                             body: """The Security Scan stage has finished with status: ${currentBuild.currentResult}.
+
+Here are the last 1000 lines of the log:
+
+${logSnippet}
+
+For the full log, please visit: ${env.BUILD_URL}artifact/security-scan-log.txt
+""",
+                             attachmentsPattern: 'security-scan-log.txt'
+                    }
+                }
             }
         }
 
