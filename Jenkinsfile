@@ -54,10 +54,15 @@ pipeline {
     post {
         always {
             script {
-                def buildLog = currentBuild.rawBuild.getLog(1000).join("\n") // get the last 100 lines of the log
-                mail to: 'amithkurian16@gmail.com',
-                     subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
-                     body: "The pipeline has finished.\n\nHere are the last 1000 lines of the build log:\n${buildLog}"
+                def logFile = "${env.WORKSPACE}/build.log"
+                writeFile file: logFile, text: currentBuild.rawBuild.getLog(1000).join("\n") // Write the log to a file
+                
+                emailext(
+                    to: 'amithkurian16@gmail.com',
+                    subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
+                    body: "The pipeline has finished. The full console log is attached as a file.",
+                    attachmentsPattern: 'build.log'
+                )
             }
         }
     }
