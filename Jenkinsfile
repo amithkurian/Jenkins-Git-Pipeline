@@ -53,12 +53,12 @@ pipeline {
 
     post {
         always {
-            script {
-                def buildLog = currentBuild.rawBuild.getLog(1000).join("\n") // get the last 1000 lines of the log
-                mail to: 'amithkurian16@gmail.com',
-                     subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
-                     body: "The pipeline has finished.\n\nHere are the last lines of the build log:\n${buildLog}"
-            }
+            emailext(
+                to: 'amithkurian16@gmail.com',
+                subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
+                body: "The pipeline has finished successfully. Please find the attached logs for more details.",
+                attachLog: true
+            )
         }
     }
 }
