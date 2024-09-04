@@ -22,7 +22,6 @@ pipeline {
             post {
                 always {
                     script {
-                        def logSnippet = currentBuild.rawBuild.getLog(1000).join("\n")
                         def logFile = "${env.WORKSPACE}/unit-integration-tests-log.txt"
                         writeFile file: logFile, text: currentBuild.rawBuild.getLogFile().text
                         archiveArtifacts artifacts: 'unit-integration-tests-log.txt'
@@ -31,12 +30,7 @@ pipeline {
                              subject: "Unit & Integration Tests: ${currentBuild.currentResult}",
                              body: """The Unit and Integration Tests stage has finished with status: ${currentBuild.currentResult}.
 
-Here are the last 1000 lines of the log:
-
-${logSnippet}
-
-For the full log, please visit: ${env.BUILD_URL}artifact/unit-integration-tests-log.txt
-""",
+Please find the attached logs for more details.""",
                              attachmentsPattern: 'unit-integration-tests-log.txt'
                     }
                 }
@@ -56,7 +50,6 @@ For the full log, please visit: ${env.BUILD_URL}artifact/unit-integration-tests-
             post {
                 always {
                     script {
-                        def logSnippet = currentBuild.rawBuild.getLog(1000).join("\n")
                         def logFile = "${env.WORKSPACE}/security-scan-log.txt"
                         writeFile file: logFile, text: currentBuild.rawBuild.getLogFile().text
                         archiveArtifacts artifacts: 'security-scan-log.txt'
@@ -65,12 +58,7 @@ For the full log, please visit: ${env.BUILD_URL}artifact/unit-integration-tests-
                              subject: "Security Scan: ${currentBuild.currentResult}",
                              body: """The Security Scan stage has finished with status: ${currentBuild.currentResult}.
 
-Here are the last 1000 lines of the log:
-
-${logSnippet}
-
-For the full log, please visit: ${env.BUILD_URL}artifact/security-scan-log.txt
-""",
+Please find the attached logs for more details.""",
                              attachmentsPattern: 'security-scan-log.txt'
                     }
                 }
@@ -106,18 +94,12 @@ For the full log, please visit: ${env.BUILD_URL}artifact/security-scan-log.txt
                 // Archive the log file
                 archiveArtifacts artifacts: 'build-log.txt'
                 
-                def buildLogSnippet = currentBuild.rawBuild.getLog(2000).join("\n")
-                
                 mail to: 'amithkurian16@gmail.com',
                      subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
                      body: """The pipeline has finished.
 
-Here are the last 1000 lines of the build log:
-
-${buildLogSnippet}
-
-For the full log, please visit: ${env.BUILD_URL}artifact/build-log.txt
-"""
+Please find the attached logs for the full build.""",
+                     attachmentsPattern: 'build-log.txt'
             }
         }
     }
