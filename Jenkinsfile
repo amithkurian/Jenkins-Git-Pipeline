@@ -13,13 +13,10 @@ pipeline {
                     if (fileExists(testFile)) {
                         echo "Test file created successfully at: ${testFile}"
                         
-                        // Send the email with the test file attached
-                        emailext(
-                            to: 'amithkurian16@gmail.com',
-                            subject: "Pipeline Test - File Attachment",
-                            body: "This is a test email with a simple file attached.",
-                            attachmentsPattern: 'test-file.txt'
-                        )
+                        // Send the email using the simpler 'mail' command
+                        mail to: 'amithkurian16@gmail.com',
+                             subject: "Pipeline Test - File Attachment",
+                             body: "This is a test email with a simple file attached."
                     } else {
                         echo "Failed to create the test file."
                     }
