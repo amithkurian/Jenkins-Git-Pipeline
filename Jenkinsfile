@@ -26,14 +26,14 @@ pipeline {
                         writeFile file: logFile, text: currentBuild.rawBuild.getLogFile().text
                         archiveArtifacts artifacts: 'unit-integration-tests-log.txt'
 
-                        emailext(
-                            to: "${env.EMAIL_RECIPIENT}",
-                            subject: "Unit & Integration Tests: ${currentBuild.currentResult}",
-                            body: """The Unit and Integration Tests stage has finished with status: ${currentBuild.currentResult}.
+                        mail to: "${env.EMAIL_RECIPIENT}",
+                             subject: "Unit & Integration Tests: ${currentBuild.currentResult}",
+                             body: """The Unit and Integration Tests stage has finished with status: ${currentBuild.currentResult}.
 
-Please find the attached logs for more details.""",
-                            attachmentsPattern: "unit-integration-tests-log.txt"
-                        )
+You can download the log file from the following link:
+
+${env.BUILD_URL}artifact/unit-integration-tests-log.txt
+"""
                     }
                 }
             }
@@ -56,14 +56,14 @@ Please find the attached logs for more details.""",
                         writeFile file: logFile, text: currentBuild.rawBuild.getLogFile().text
                         archiveArtifacts artifacts: 'security-scan-log.txt'
 
-                        emailext(
-                            to: "${env.EMAIL_RECIPIENT}",
-                            subject: "Security Scan: ${currentBuild.currentResult}",
-                            body: """The Security Scan stage has finished with status: ${currentBuild.currentResult}.
+                        mail to: "${env.EMAIL_RECIPIENT}",
+                             subject: "Security Scan: ${currentBuild.currentResult}",
+                             body: """The Security Scan stage has finished with status: ${currentBuild.currentResult}.
 
-Please find the attached logs for more details.""",
-                            attachmentsPattern: "security-scan-log.txt"
-                        )
+You can download the log file from the following link:
+
+${env.BUILD_URL}artifact/security-scan-log.txt
+"""
                     }
                 }
             }
@@ -98,14 +98,14 @@ Please find the attached logs for more details.""",
                 // Archive the log file
                 archiveArtifacts artifacts: 'build-log.txt'
                 
-                emailext(
-                    to: "${env.EMAIL_RECIPIENT}",
-                    subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
-                    body: """The pipeline has finished.
+                mail to: "${env.EMAIL_RECIPIENT}",
+                     subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
+                     body: """The pipeline has finished.
 
-Please find the attached logs for the full build.""",
-                    attachmentsPattern: "build-log.txt"
-                )
+You can download the full build log from the following link:
+
+${env.BUILD_URL}artifact/build-log.txt
+"""
             }
         }
     }
