@@ -54,10 +54,13 @@ pipeline {
     post {
         always {
             script {
-                def buildLog = currentBuild.rawBuild.getLog(1000).join("\n") // get the last 100 lines of the log
+                // Read the full log from the log file
+                def logFile = currentBuild.rawBuild.getLogFile()
+                def fullLog = readFile(logFile)
+
                 mail to: 'amithkurian16@gmail.com',
                      subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
-                     body: "The pipeline has finished.\n\nHere are the last 1000 lines of the build log:\n${buildLog}"
+                     body: "The pipeline has finished.\n\nHere is the full log:\n${fullLog}"
             }
         }
     }
