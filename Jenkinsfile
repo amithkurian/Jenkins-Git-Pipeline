@@ -31,7 +31,7 @@ pipeline {
                              body: """The Unit and Integration Tests stage has finished with status: ${currentBuild.currentResult}.
 
 Please find the attached logs for more details.""",
-                             attachmentsPattern: 'unit-integration-tests-log.txt'
+                             attachmentsPattern: "${logFile}" // Attach log explicitly with full path
                     }
                 }
             }
@@ -59,7 +59,7 @@ Please find the attached logs for more details.""",
                              body: """The Security Scan stage has finished with status: ${currentBuild.currentResult}.
 
 Please find the attached logs for more details.""",
-                             attachmentsPattern: 'security-scan-log.txt'
+                             attachmentsPattern: "${logFile}" // Attach log explicitly with full path
                     }
                 }
             }
@@ -94,12 +94,12 @@ Please find the attached logs for more details.""",
                 // Archive the log file
                 archiveArtifacts artifacts: 'build-log.txt'
                 
-                mail to: 'amithkurian16@gmail.com',
+                mail to: "${env.EMAIL_RECIPIENT}",
                      subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
                      body: """The pipeline has finished.
 
 Please find the attached logs for the full build.""",
-                     attachmentsPattern: 'build-log.txt'
+                     attachmentsPattern: "${logFile}" // Attach full build log explicitly with full path
             }
         }
     }
