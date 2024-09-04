@@ -51,13 +51,29 @@ pipeline {
         }
     }
 
-    post {
+     post {
         always {
             script {
-                def buildLog = currentBuild.rawBuild.getLog(2000).join("\n") // get the last 100 lines of the log
-                mail to: 'amithkurian16@gmail.com',
-                     subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
-                     body: "The pipeline has finished.\n\nHere are the last 2000 lines of the build log:\n${buildLog}"
+                // Define the path to the log file inside the workspace
+                def logFile = "${env.WORKSPACE}/pipeline-log.txt"
+                
+                // Write the last 1000 lines of the log to the file
+                writeFile file: logFile, text: currentBuild.rawBuild.getLog(1000).join("\n")
+                
+                // Ensure the file was created successfully
+                if (fileExists(logFile)) {
+                    echo "Log file created successfully at: ${logFile}"
+                    
+                    // Use emailext to attach the log file
+                    emailext(
+                        to: 'amithkurian16@gmail.com',
+                        subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
+                        body: "The pipeline has finished. Please find the attached log file.",
+                        attachmentsPattern: 'pipeline-log.txt'
+                    )
+                } else {
+                    echo "Failed to create the log file."
+                }
             }
         }
     }
