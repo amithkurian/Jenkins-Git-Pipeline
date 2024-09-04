@@ -53,10 +53,12 @@ pipeline {
 
     post {
         always {
-            mail to: 'amithkurian16@gmail.com',
-                 subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
-                 body: "The pipeline has finished. Please check the Jenkins console output for more details.",
-                 attachLog: true
+            script {
+                def buildLog = currentBuild.rawBuild.getLog(100).join("\n") // get the last 100 lines of the log
+                mail to: 'amithkurian16@gmail.com',
+                     subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
+                     body: "The pipeline has finished.\n\nHere are the last 100 lines of the build log:\n${buildLog}"
+            }
         }
     }
 }
