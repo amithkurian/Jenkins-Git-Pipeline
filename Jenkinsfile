@@ -52,13 +52,14 @@ pipeline {
     }
 
     post {
-        always {
-            emailext(
-                to: 'amithkurian16@gmail.com',
-                subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
-                body: "The pipeline has finished successfully. Please find the attached logs for more details.",
-                attachLog: true
+    always {
+        emailext(
+            to: 'amithkurian16@gmail.com',
+            subject: "Pipeline Completed: ${currentBuild.fullDisplayName}",
+            body: "The pipeline has finished successfully. Please find the attached logs for more details.",
+            attachLog: true
             )
         }
     }
+
 }
